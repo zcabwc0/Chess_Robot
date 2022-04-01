@@ -10,7 +10,6 @@ class board_checker():
         self.svm = svm
     
     def check_difference(self,init_color, new_color):
-        replace = False
         origin_p = 0
         new_p = 0
         for i in range(64):
@@ -20,12 +19,9 @@ class board_checker():
                 elif(new_color[i] == None):
                     origin_p = i
                 else:
-                    replace = True
                     new_p = i
-        origin_p = INDEX_TO_POSITION[origin_p]
-        new_p = INDEX_TO_POSITION[new_p]
-        current_move = origin_p + new_p
-        return replace, current_move
+        current_move = INDEX_TO_POSITION[origin_p] + INDEX_TO_POSITION[new_p]
+        return current_move
     
     def detect_new_color(self):
         color = []
