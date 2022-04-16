@@ -17,6 +17,9 @@ def check_move(board, move):
     legal_moves = board.legal_moves
     return chess.Move.from_uci(move) in legal_moves
 
+def check_promotion(board, move):
+    return chess.Move.from_uci(move + "q") in board.legal_moves
+
 def load_pca_svc():
     path = "./data/squares/color"
     with open(os.path.join(path, "color_detection.pca"), 'rb') as pca_file:
@@ -70,11 +73,13 @@ while(True):
     checker = board_checker(board, new_board,pca,svc)
     current_move = checker.check()
     print("Human player's move: " + current_move)
-
+    if(check_promotion(board, current_move)):
+        current_move += "q"
     # Check whether the human player's move is legal
     if(not check_move(board,current_move)):
         print("Illegal move, please redone your move!!")
         continue
+
     board.push(chess.Move.from_uci(current_move))
     print("Board state after human player's move")
     print(board)

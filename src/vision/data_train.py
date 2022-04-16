@@ -4,7 +4,9 @@ import cv2
 from sklearn.decomposition import PCA
 from sklearn.svm import SVC
 import pickle
-
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
+import matplotlib.pyplot as plt
 color_labels = ['black','empty','white']
 
 def load_data(label, path):
@@ -39,7 +41,7 @@ def main():
         dataset = np.concatenate((dataset,images))
         data_labels += labels
     dataset, data_labels = data_shuffle(dataset,np.array(data_labels))
-    train_size = int(len(data_labels) * 0.9)
+    train_size = int(len(data_labels) * 0.85)
     d_train = dataset[:train_size]
     d_val = dataset[train_size:]    
     y_train = data_labels[:train_size]
@@ -53,6 +55,14 @@ def main():
     pred = svc.predict(val_pca)
     a = np.sum(pred == y_val) / float(y_val.shape[0])
     print("Accuracy: " + str(a))
+    confusion_m = confusion_matrix(y_val, pred)
+    ax = sns.heatmap(confusion_m, annot=True, cmap='Blues')
+    ax.set_xlabel('Predicted Values')
+    ax.set_ylabel('Actual Values ')
+    ax.xaxis.set_ticklabels(['Empty','Black','White'])
+    ax.yaxis.set_ticklabels(['Empty','Black','White'])
+    plt.show()
+
 
     with open(os.path.join(data_path,"color_detection.pca"), 'wb') as file:
         pickle.dump(pca, file)
